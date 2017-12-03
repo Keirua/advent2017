@@ -1,3 +1,7 @@
+#![allow(unused_variables, dead_code)]
+
+use std::fmt;
+
 #[derive(Debug,Copy)]
 pub struct Coord{
     x:i32,
@@ -25,11 +29,6 @@ impl PartialEq for Coord {
         self.x == other.x && self.y == other.y
     }
 }
-/*
-impl Eq for Coord {
-
-}
-*/
 
 #[derive(Debug,Copy)]
 enum Orientation {
@@ -97,6 +96,79 @@ pub fn generate_coords(n:usize) -> Vec<Coord> {
 
     return v;
 }
+
+pub struct Grid {
+    s:usize,
+    grid: Vec<Vec<i32>>
+}
+
+impl fmt::Display for Grid {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        for i in 0..self.s {
+            for j in 0..self.s {
+                let _ = write!(f, "{} ", self.grid[i][j]);
+            }
+            let _ = write!(f, "\n");
+        }
+        write!(f, "")
+    }
+}
+
+impl Grid {
+    pub fn generate_sum_grid(n:usize) -> Grid  {
+        let mut g = Grid::initialize(n);
+        let coords = generate_coords(n);
+        g.grid[g.s/2 as usize ][g.s/2 as usize] = 1;
+        for i in 1..n {
+            let grid_coord = g.to_grid_coord(coords[i].clone());
+            let value = g.get_grid_value(grid_coord);
+            g.grid[grid_coord.x as usize ][grid_coord.y as usize] = value;
+            if value > n as i32 {
+                println!("{}", value);
+                break;
+            }
+        }
+        g
+    }
+
+    pub fn to_grid_coord(&self, c:Coord) -> Coord {
+        Coord::new (
+            c.x + (self.s/2) as i32,
+            c.y + (self.s/2) as i32
+        )
+    }
+    
+    fn get_grid_value(&self, c:Coord) -> i32 {
+        let mut r:i32 = 0;
+        for i in -1..2 {
+            for j in -1..2 {
+                let xoff:i32 = c.x+i;
+                let yoff:i32 = c.y+j;
+                if (xoff >=0 && yoff >=0) && (xoff < self.s as i32 && yoff < self.s as i32) {
+                    r += self.grid[xoff as usize][yoff as usize];
+                }
+            }
+        }
+        return r;
+    }
+
+    fn initialize(n:usize) -> Grid {
+        let s = ((n as f64).sqrt() as usize) +1;
+        let mut v = Vec::new();
+        for _ in 0..s {
+            let mut line = Vec::new();
+            for _ in 0..s {
+                line.push(0);
+            }
+            v.push(line);
+        };
+        Grid {
+            grid: v,
+            s:s
+        }
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
