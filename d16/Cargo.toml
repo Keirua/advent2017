@@ -3,4 +3,6 @@ name = "d16"
 version = "0.1.0"
 authors = ["clement <clement@keiruaprod.fr>"]
 
+
 [dependencies]
+regex = "0.2"
