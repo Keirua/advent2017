@@ -1,12 +1,11 @@
 pub fn generate_spinlock(nb_iterations: usize, max_value: i32) -> Vec<i32> {
     let mut v:Vec<i32> = Vec::new();
-
-    let mut pos:usize = 0;
     v.push(0);
+    let mut pos:usize = 0;
     for current_value in 1..max_value+1 {
         pos = (pos + nb_iterations) % v.len();
-        v.insert(pos, current_value);
-        pos += 1;
+        v.insert(pos+1, current_value);
+        pos = pos +1;
     }
 
     v
