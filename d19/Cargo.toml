@@ -1,0 +1,6 @@
+[package]
+name = "d19"
+version = "0.1.0"
+authors = ["clement <clement@keiruaprod.fr>"]
+
+[dependencies]
